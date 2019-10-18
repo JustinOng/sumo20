@@ -1,21 +1,25 @@
 #ifndef DRIVE_H
 #define DRIVE_H
 
+#include <Arduino.h>
+
 // max speed in encoder count per second
-#define MAX_SPEED 400000
+// scaling factor * max voltage * kV * encoder count per rev / seconds in a minute
+// 0.90 * 12.6 * 1400 * 4000 / 60 = 1058400
+#define MAX_SPEED 900000
 
 class Drive {
   public:
     // axis on the odrive
     enum Motor_t {
-      LEFT = 1,
-      RIGHT = 0
+      RIGHT = 0,
+      LEFT = 1
     };
 
-    Drive(Stream& serial);
-    setSpeed(Motor_t motor, int8_t velocity);
+    Drive(Stream* serial);
+    void setSpeed(Motor_t motor, int8_t velocity);
   private:
-    Stream& _serial;
-}
+    Stream* _serial;
+};
 
 #endif

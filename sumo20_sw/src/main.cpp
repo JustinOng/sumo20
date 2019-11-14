@@ -1,6 +1,8 @@
 #include <Arduino.h>
 #include "drive.h"
 
+// #define LOG_CONTROLLER_VALUES
+
 // scale left and right drive powers
 #define LEFT_SCALE -1
 #define RIGHT_SCALE 1
@@ -52,5 +54,11 @@ void loop() {
     drive.setSpeed(Drive::RIGHT, (forward - turn) * RIGHT_SCALE);
 
     driveDelay = 0;
+
+#ifdef LOG_CONTROLLER_VALUES
+    Serial.print(pulse_len[0]);
+    Serial.print(", ");
+    Serial.println(pulse_len[1]);
+#endif
   }
 }

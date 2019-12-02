@@ -3,8 +3,12 @@
 
 // #define LOG_CONTROLLER_VALUES
 
+#define PIN_RC_CH0 23
+#define PIN_RC_CH1 22
+#define PIN_RC_CH2 21
+
 // scale left and right drive powers
-#define LEFT_SCALE -1
+#define LEFT_SCALE 1
 #define RIGHT_SCALE 1
 
 // ms at which odrive should be updated
@@ -34,7 +38,9 @@ void setup() {
 
   attachInterrupt(23, ch_service<23, 0>, CHANGE);
   attachInterrupt(22, ch_service<22, 1>, CHANGE);
-  attachInterrupt(21, ch_service<21, 2>, CHANGE);
+  attachInterrupt(PIN_RC_CH0, ch_service<PIN_RC_CH0, 0>, CHANGE);
+  attachInterrupt(PIN_RC_CH1, ch_service<PIN_RC_CH1, 1>, CHANGE);
+  attachInterrupt(PIN_RC_CH2, ch_service<PIN_RC_CH2, 2>, CHANGE);
 
   pinMode(13, OUTPUT);
 }

@@ -1,7 +1,14 @@
 #include <Arduino.h>
+#include <Servo.h>
 #include "drive.h"
 
 // #define LOG_CONTROLLER_VALUES
+
+#define PIN_VACUUM 2
+
+// ms to send for vacuum on/off state
+#define VACUUM_OFF 1000
+#define VACUUM_ON 1600
 
 #define PIN_RC_CH0 23
 #define PIN_RC_CH1 22
@@ -9,7 +16,7 @@
 
 // scale left and right drive powers
 #define LEFT_SCALE 1
-#define RIGHT_SCALE 1
+#define RIGHT_SCALE -1
 
 // ms at which odrive should be updated
 #define DRIVE_UPDATE_THROTTLE 50
@@ -19,6 +26,7 @@ const uint16_t MIN_PULSE_LEN[3] = {990, 1010};
 const uint16_t MAX_PULSE_LEN[3] = {2010, 1992};
 
 Drive drive(&Serial3);
+Servo vacuum;
 
 volatile uint16_t pulse_len[3] = {1500};
 
@@ -36,8 +44,8 @@ void setup() {
   Serial.begin(115200);
   Serial3.begin(115200);
 
-  attachInterrupt(23, ch_service<23, 0>, CHANGE);
-  attachInterrupt(22, ch_service<22, 1>, CHANGE);
+  vacuum.attach(PIN_VACUUM);
+
   attachInterrupt(PIN_RC_CH0, ch_service<PIN_RC_CH0, 0>, CHANGE);
   attachInterrupt(PIN_RC_CH1, ch_service<PIN_RC_CH1, 1>, CHANGE);
   attachInterrupt(PIN_RC_CH2, ch_service<PIN_RC_CH2, 2>, CHANGE);
@@ -66,5 +74,11 @@ void loop() {
     Serial.print(", ");
     Serial.println(pulse_len[1]);
 #endif
+
+    if (pulse_len[2] > 1500) {
+      vacuum.writeMicroseconds(VACUUM_ON);
+    } else {
+      vacuum.writeMicroseconds(VACUUM_OFF);
+    }
   }
 }

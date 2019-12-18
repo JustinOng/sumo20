@@ -15,6 +15,9 @@
 #define LEFT_SCALE 1
 #define RIGHT_SCALE -1
 
+// scale turn power
+#define TURN_SCALE -1
+
 // ms at which odrive should be updated
 #define DRIVE_UPDATE_THROTTLE 50
 
@@ -47,8 +50,8 @@ void loop() {
     if (abs(forward) < 5) forward = 0;
     if (abs(turn) < 5) turn = 0;
 
-    drive.setSpeed(Drive::LEFT, (forward + turn) * LEFT_SCALE);
-    drive.setSpeed(Drive::RIGHT, (forward - turn) * RIGHT_SCALE);
+    drive.setSpeed(Drive::LEFT, (forward + turn * TURN_SCALE) * LEFT_SCALE);
+    drive.setSpeed(Drive::RIGHT, (forward - turn * TURN_SCALE) * RIGHT_SCALE);
 
     driveDelay = 0;
 

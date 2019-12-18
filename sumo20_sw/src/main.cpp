@@ -26,14 +26,18 @@ void loop() {
 
   digitalWrite(13, IBus.is_alive());
 
-  int8_t forward = (int8_t) map(IBus.readChannel(1), 1000, 2000, -100, 100);
-  int8_t turn = (int8_t) map(IBus.readChannel(0), 1000, 2000, -100, 100);
+  if (IBus.is_alive()) {
+    int8_t forward = (int8_t) map(IBus.readChannel(1), 1000, 2000, -100, 100);
+    int8_t turn = (int8_t) map(IBus.readChannel(0), 1000, 2000, -100, 100);
 
-  robot.setSpeed(forward, turn);
-  if (IBus.readChannel(6) > 1500) {
-    robot.setVacuum(VACUUM_ON);
+    robot.setSpeed(forward, turn);
+    if (IBus.readChannel(6) > 1500) {
+      robot.setVacuum(VACUUM_ON);
+    } else {
+      robot.setVacuum(0);
+    }
   } else {
-    robot.setVacuum(0);
+    robot.setSpeed(0, 0);
   }
 
 #ifdef LOG_CONTROLLER_VALUES

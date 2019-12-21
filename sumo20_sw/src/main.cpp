@@ -11,7 +11,9 @@
 Robot robot;
 
 void setup() {
-  Serial.begin(115200);
+  Serial1.begin(115200);
+  Serial1.println("Starting");
+
   Serial2.begin(115200);
 
   IBus.begin(Serial2);
@@ -43,11 +45,11 @@ void loop() {
 
 #ifdef LOG_CONTROLLER_VALUES
     for (int i = 0; i < 10; i++) {
-      Serial.print(i);
-      Serial.print(": ");
-      Serial.print(IBus.readChannel(i));
-      Serial.print(" ");
+      Serial1.print(i);
+      Serial1.print(": ");
+      Serial1.print(IBus.readChannel(i));
+      Serial1.print(" ");
     }
-    Serial.println();
+    Serial1.println();
 #endif
 }

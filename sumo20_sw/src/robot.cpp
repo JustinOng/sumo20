@@ -30,3 +30,9 @@ void Robot::setVacuum(uint8_t power) {
   // power: 0 - 100
   _vacuum->writeMicroseconds(map(power, 0, 100, 1000, 2000));
 }
+
+void Robot::loop(void) {
+  for (byte i = 0; i < NUM_IR; i++) {
+    ir[i] = analogRead(ir_pins[i]) < IR_THRESHOLD;
+  }
+}

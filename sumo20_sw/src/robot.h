@@ -18,15 +18,33 @@
 // throttle updates to the motor driver/vacuum to UPDATE_THROTTLE ms
 #define UPDATE_THROTTLE 50
 
+// ADC value below which to treat as line seen (white)
+#define IR_THRESHOLD 300
+#define NUM_IR 4
+
+const uint8_t ir_pins[NUM_IR] = {23, 15, 14, 20};
+
+enum {
+  IR_FRONT_LEFT,
+  IR_FRONT_RIGHT,
+  IR_REAR_RIGHT,
+  IR_REAR_LEFT
+};
+
 class Robot {
   public:
     Robot(void);
     void begin(void);
     void setSpeed(int8_t forward, int8_t turn);
     void setVacuum(uint8_t power);
+
+    void loop(void);
   private:
     Drive *_drive;
     Servo *_vacuum;
+
+    // true if line is seen
+    bool ir[NUM_IR];
 };
 
 #endif

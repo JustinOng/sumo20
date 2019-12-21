@@ -4,6 +4,8 @@
 #include <Arduino.h>
 #include <Servo.h>
 
+#include <FastLED.h>
+
 #include "drive.h"
 
 // scale left and right drive powers
@@ -31,6 +33,10 @@ enum {
   IR_REAR_LEFT
 };
 
+// number of internal LEDs
+#define NUM_LED_INT 5
+#define PIN_LED_INT 10
+
 class Robot {
   public:
     Robot(void);
@@ -45,6 +51,7 @@ class Robot {
 
     // true if line is seen
     bool ir[NUM_IR];
+    CRGB leds_int[NUM_LED_INT];
 };
 
 #endif

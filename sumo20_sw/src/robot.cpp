@@ -9,6 +9,7 @@ Robot::Robot(void) {
 
 void Robot::begin(void) {
   Serial3.begin(115200);
+  LEDS.addLeds<WS2812B, PIN_LED_INT, RGB>(leds_int, NUM_LED_INT);
 }
 
 void Robot::setSpeed(int8_t forward, int8_t turn) {

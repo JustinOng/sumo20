@@ -5,6 +5,8 @@
 #include <Servo.h>
 
 #include <FastLED.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
 
 #include "drive.h"
 #include "distance_sensors.h"
@@ -39,6 +41,8 @@ enum {
 #define NUM_LED_INT 5
 #define PIN_LED_INT 10
 
+#define PIN_ISEN A3
+
 class Robot {
   public:
     Robot(void);
@@ -57,6 +61,10 @@ class Robot {
     // true if line is seen
     bool ir[NUM_IR] = {0};
     CRGB leds_int[NUM_LED_INT];
+
+    Adafruit_SSD1306 *_display;
+
+    void displayCurrent(void);
 };
 
 #endif

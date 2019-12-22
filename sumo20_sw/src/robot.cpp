@@ -8,6 +8,8 @@ Robot::Robot(void) {
 
   _vacuum->attach(PIN_VACUUM);
   _lifter->attach(PIN_LIFTER);
+
+  _display = new Adafruit_SSD1306(128, 64, &Wire, -1);
 }
 
 void Robot::begin(void) {
@@ -17,6 +19,13 @@ void Robot::begin(void) {
   // initialises 19/18 as SCL/SDA
   Wire.begin();
   Wire.setTimeout(1);
+
+  if(!_display->begin(SSD1306_SWITCHCAPVCC, 0x3c)) {
+    Serial1.println(F("SSD1306 allocation failed"));
+  }
+
+  _display->setTextSize(1);
+  _display->setTextColor(SSD1306_WHITE);
 }
 
 void Robot::setSpeed(int8_t forward, int8_t turn) {
@@ -41,6 +50,31 @@ void Robot::setVacuum(uint8_t power) {
 
 void Robot::setLifter(uint16_t pulsewidth) {
   _lifter->writeMicroseconds(pulsewidth);
+}
+
+void Robot::displayCurrent(void) {
+  static elapsedMillis last_update;
+
+  if (last_update < 100) return;
+  last_update = 0;
+
+  // the ACS712 outputs a value from 0-5V which goes through a voltage divider
+  // reducing it to 0-3.3V
+  float raw_voltage = analogRead(PIN_ISEN) / 1024.0 * 3.3;
+  float corrected_voltage = raw_voltage * 3 / 2;
+
+  // value is centered around 2.5V, every ampere is 0.1V
+  // multiply by 100 so we work with ints instead
+  int8_t current = (corrected_voltage - 2.5) * 100;
+
+  _display->clearDisplay();
+  _display->setCursor(0, 0);
+  _display->print("Current: ");
+  _display->print(current / 10);
+  _display->print('.');
+  _display->print(abs(current % 10));
+
+  _display->display();
 }
 
 void Robot::loop(void) {
@@ -68,4 +102,6 @@ void Robot::loop(void) {
   }
 
   FastLED.show();
+
+  displayCurrent();
 }

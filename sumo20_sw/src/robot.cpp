@@ -40,7 +40,26 @@ void Robot::setVacuum(uint8_t power) {
 void Robot::loop(void) {
   _distance_sensors->loop();
 
+  for(byte i = 0; i < NUM_VL53L0X; i++) {
+    // calculate correct index in the ws2812b
+    byte led_index = (3-i) + 1;
+    
+    if (!_distance_sensors->initialised[i]) {
+      leds_int[led_index] = CRGB::Black;
+      continue;
+    }
+
+    if (_distance_sensors->distance[i] > 1000) {
+      leds_int[led_index] = CRGB::Red;
+      continue;
+    }
+
+    leds_int[led_index] = map(_distance_sensors->distance[i], 0, 1000, 0, 255) << 8;
+  }
+
   for (byte i = 0; i < NUM_IR; i++) {
     ir[i] = analogRead(ir_pins[i]) < IR_THRESHOLD;
   }
+
+  FastLED.show();
 }

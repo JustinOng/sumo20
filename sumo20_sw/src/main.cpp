@@ -14,9 +14,7 @@ void setup() {
   Serial1.begin(115200);
   Serial1.println("Starting");
 
-  Serial2.begin(115200);
-
-  IBus.begin(Serial2);
+  IBus.begin(Serial1);
 
   robot.begin();
 

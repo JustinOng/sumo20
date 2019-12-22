@@ -5,10 +5,9 @@
 #include <Servo.h>
 
 #include <FastLED.h>
-#include <Wire.h>
-#include <VL53L0X.h>
 
 #include "drive.h"
+#include "distance_sensors.h"
 
 // scale left and right drive powers
 #define LEFT_SCALE 1
@@ -39,11 +38,6 @@ enum {
 #define NUM_LED_INT 5
 #define PIN_LED_INT 10
 
-#define PORT_EXPANDER_ADDR 0x20
-#define NUM_VL53L0X 4
-// base address to remap the sensors to
-#define VL53L0X_BASE_ADDR 0x30
-
 class Robot {
   public:
     Robot(void);
@@ -55,15 +49,11 @@ class Robot {
   private:
     Drive *_drive;
     Servo *_vacuum;
+    Distance_Sensors *_distance_sensors;
 
     // true if line is seen
     bool ir[NUM_IR] = {0};
     CRGB leds_int[NUM_LED_INT];
-
-    VL53L0X distance_sensors[NUM_VL53L0X];
-    uint16_t distance[NUM_VL53L0X] = {0};
-
-    void begin_vl53l0x(void);
 };
 
 #endif

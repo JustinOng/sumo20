@@ -16,7 +16,8 @@
 // scale turn power
 #define TURN_SCALE -1
 
-#define PIN_VACUUM 2
+#define PIN_VACUUM 4
+#define PIN_LIFTER 5
 
 // throttle updates to the motor driver/vacuum to UPDATE_THROTTLE ms
 #define UPDATE_THROTTLE 50
@@ -44,11 +45,13 @@ class Robot {
     void begin(void);
     void setSpeed(int8_t forward, int8_t turn);
     void setVacuum(uint8_t power);
+    void setLifter(uint16_t pulsewidth);
 
     void loop(void);
   private:
     Drive *_drive;
     Servo *_vacuum;
+    Servo *_lifter;
     Distance_Sensors *_distance_sensors;
 
     // true if line is seen

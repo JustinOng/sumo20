@@ -37,6 +37,8 @@ void loop() {
     } else {
       robot.setVacuum(0);
     }
+
+    robot.setLifter(IBus.readChannel(2));
   } else {
     robot.setSpeed(0, 0);
   }

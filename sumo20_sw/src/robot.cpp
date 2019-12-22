@@ -3,9 +3,11 @@
 Robot::Robot(void) {
   _drive = new Drive(&Serial3);
   _vacuum = new Servo();
+  _lifter = new Servo();
   _distance_sensors = new Distance_Sensors();
 
   _vacuum->attach(PIN_VACUUM);
+  _lifter->attach(PIN_LIFTER);
 }
 
 void Robot::begin(void) {
@@ -35,6 +37,10 @@ void Robot::setSpeed(int8_t forward, int8_t turn) {
 void Robot::setVacuum(uint8_t power) {
   // power: 0 - 100
   _vacuum->writeMicroseconds(map(power, 0, 100, 1000, 2000));
+}
+
+void Robot::setLifter(uint16_t pulsewidth) {
+  _lifter->writeMicroseconds(pulsewidth);
 }
 
 void Robot::loop(void) {

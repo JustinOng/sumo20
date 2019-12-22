@@ -21,7 +21,7 @@ void Distance_Sensors::loop(void) {
     delay(2);
 
     if (!distance_sensors[i].init()) {
-      Serial1.print("Failed to initialise distance sensor "); Serial1.println(i);
+      // Serial1.print("Failed to initialise distance sensor "); Serial1.println(i);
 
       // shut down the sensor
       port_expander_state &= ~(1 << i);
@@ -42,9 +42,9 @@ void Distance_Sensors::loop(void) {
   }
 
   for (byte i = 0; i < NUM_VL53L0X; i++) {
-    uint16_t val = distance_sensors[i].readRangeContinuousMillimeters();
-    if (val != 65535) {
-      distance[i] = val;
-    }
+    if (!initialised[i]) continue;
+
+    uint16_t val = distance_sensors[i].readReg16Bit(distance_sensors[i].RESULT_RANGE_STATUS + 10);
+    distance[i] = val;
   }
 }

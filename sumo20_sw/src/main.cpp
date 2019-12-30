@@ -23,7 +23,6 @@ void setup() {
 
 void loop() {
   IBus.loop();
-  robot.loop();
 
   digitalWrite(13, IBus.is_alive());
 
@@ -52,4 +51,5 @@ void loop() {
     }
     Serial1.println();
 #endif
+  robot.loop();
 }

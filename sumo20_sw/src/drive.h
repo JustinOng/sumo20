@@ -27,8 +27,7 @@ class Drive {
     // used to track what data we're expecting to receive on the serial port
     enum Read_State_t {
       NONE,
-      READING_POS,
-      READING_VEL
+      READING_FEEDBACK
     };
 
     Read_State_t _read_state = NONE;

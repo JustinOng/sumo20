@@ -19,7 +19,7 @@ void Drive::requestFeedback(Motor_t motor) {
   _serial->print("f ");
   _serial->println((uint8_t) motor);
 
-  _read_state = READING_POS;
+  _read_state = READING_FEEDBACK;
   _read_state_data = (uint8_t) motor;
 }
 
@@ -35,25 +35,13 @@ void Drive::loop(void) {
     last_message = 0;
     data = _serial->read();
 
-    if (_read_state == READING_POS) {
-      if (data == ' ') {
-        // _read_state_buffer contains full pos data
-        _pos[_read_state_data] = atof(_read_state_buffer);
-        _read_state_len = 0;
-
-        _read_state = READING_VEL;
-      } else {
-        _read_state_buffer[_read_state_len++] = data;
-      }
-    } else if (_read_state == READING_VEL) {
+    if (_read_state == READING_FEEDBACK) {
+      _read_state_buffer[_read_state_len++] = data;
       if (data == '\n') {
-        // _read_state_buffer contains full vel data
-        _vel[_read_state_data] = atof(_read_state_buffer);
+        sscanf(_read_state_buffer, "%f %f", &_pos[_read_state_data], &_vel[_read_state_data]);
         _read_state_len = 0;
 
         _read_state = NONE;
-      } else {
-        _read_state_buffer[_read_state_len++] = data;
       }
     } else {
       Serial1.print("Received data while in NONE: ");

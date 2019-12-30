@@ -15,8 +15,8 @@ class Drive {
   public:
     // axis on the odrive
     enum Motor_t {
-      RIGHT = 0,
-      LEFT = 1
+      LEFT = 0,
+      RIGHT = 1
     };
 
     Drive(Stream* serial);

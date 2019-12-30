@@ -12,11 +12,11 @@
 #include "distance_sensors.h"
 
 // scale left and right drive powers
-#define LEFT_SCALE 1
-#define RIGHT_SCALE -1
+#define LEFT_SCALE -1
+#define RIGHT_SCALE 1
 
 // scale turn power
-#define TURN_SCALE -1
+#define TURN_SCALE 1
 
 #define PIN_VACUUM 4
 #define PIN_LIFTER 5

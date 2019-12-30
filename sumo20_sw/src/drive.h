@@ -18,6 +18,7 @@ class Drive {
 
     Drive(Stream* serial);
     void setSpeed(Motor_t motor, int8_t velocity);
+    void setPosition(Motor_t motor, int32_t target);
     void requestFeedback(void);
 
     int32_t getPos(Motor_t motor);

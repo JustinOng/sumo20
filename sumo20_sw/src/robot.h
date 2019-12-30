@@ -60,6 +60,14 @@ class Robot {
 
     void loop(void);
   private:
+    enum Auton_State_t {
+      NONE,
+      ST1_TURN, // turn away from starting position
+      ST2_FW,   // move forward
+      DONE,
+      INVALID
+    };
+
     Drive *_drive;
     Servo *_vacuum;
     Servo *_lifter;
@@ -76,7 +84,10 @@ class Robot {
     uint8_t _power_left = 0;
     uint8_t _power_right = 0;
 
+    Auton_State_t _auton_state, _pAuton_state = NONE;
+
     void displayCurrent(void);
+    void updateAutonState(void);
 };
 
 #endif

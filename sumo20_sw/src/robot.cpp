@@ -78,7 +78,14 @@ void Robot::displayCurrent(void) {
 }
 
 void Robot::setMode(Modes_t mode) {
+  if (_mode == mode) return;
+  
   _mode = mode;
+
+  if (_mode == MODE_AUTON) {
+    _auton_state = NONE;
+    Serial1.println("Entering auton");
+  }
 }
 
 void Robot::loop(void) {
@@ -114,6 +121,7 @@ void Robot::loop(void) {
     _drive->setSpeed(Drive::RIGHT, _power_right);
     leds_int[0] = CRGB::Green;
   } else {
+    updateAutonState();
     leds_int[0] = CRGB::Blue;
   }
 
@@ -126,4 +134,47 @@ void Robot::loop(void) {
     _drive->requestFeedback();
   }
 }
+
+void Robot::updateAutonState(void) {
+  Auton_State_t new_state = INVALID;
+  static int32_t target_left = 0;
+  static int32_t target_right = 0;
+
+  switch(_auton_state) {
+    case NONE:
+      new_state = ST1_TURN;
+      Serial1.println("Enetered NONE");
+      break;
+    case ST1_TURN:
+      if (_auton_state != _pAuton_state) {
+        Serial1.println("Entered ST1_TURN");
+        target_left = _drive->getPos(Drive::LEFT) + (3 * 14 * 4000);
+        Serial1.print("Target: ");
+        Serial1.println(target_left);
+
+        _drive->setPosition(Drive::LEFT, target_left);
+      }
+
+      Serial1.print("Current pos: ");
+      Serial1.println(_drive->getPos(Drive::LEFT));
+
+      if (_drive->getPos(Drive::LEFT) > target_left) {
+        new_state = DONE;
+      }
+      break;
+    case DONE:
+      if (_auton_state != _pAuton_state) {
+        Serial1.println("Entered done");
+      }
+      break;
+    case INVALID:
+      new_state = NONE;
+      break;
+  }
+
+  _pAuton_state = _auton_state;
+
+  if (new_state != INVALID) {
+    _auton_state = new_state;
+  }
 }

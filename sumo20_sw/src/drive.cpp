@@ -13,6 +13,13 @@ void Drive::setSpeed(Motor_t motor, int8_t velocity) {
   _serial->println(map(velocity, -100, 100, -MAX_SPEED, MAX_SPEED));
 }
 
+void Drive::setPosition(Motor_t motor, int32_t target) {
+  _serial->print("p ");
+  _serial->print((uint8_t) motor);
+  _serial->print(" ");
+  _serial->println(target);
+}
+
 void Drive::requestFeedback(void) {
   _requestFeedback(LEFT);
 }

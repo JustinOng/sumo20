@@ -105,8 +105,14 @@ void Robot::loop(void) {
     ir[i] = analogRead(ir_pins[i]) < IR_THRESHOLD;
   }
 
+  if (_mode == MODE_RC) {
     _drive->setSpeed(Drive::LEFT, _power_left);
     _drive->setSpeed(Drive::RIGHT, _power_right);
+    leds_int[0] = CRGB::Green;
+  } else {
+    leds_int[0] = CRGB::Blue;
+  }
+
   FastLED.show();
 
   displayCurrent();

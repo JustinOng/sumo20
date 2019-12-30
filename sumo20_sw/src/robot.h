@@ -45,11 +45,18 @@ enum {
 
 class Robot {
   public:
+    enum Modes_t {
+      MODE_RC,
+      MODE_AUTON
+    };
+
     Robot(void);
     void begin(void);
     void setSpeed(int8_t forward, int8_t turn);
     void setVacuum(uint8_t power);
     void setLifter(uint16_t pulsewidth);
+
+    void setMode(Modes_t mode);
 
     void loop(void);
   private:
@@ -63,6 +70,8 @@ class Robot {
     CRGB leds_int[NUM_LED_INT];
 
     Adafruit_SSD1306 *_display;
+    
+    Modes_t _mode = MODE_RC;
 
     uint8_t _power_left = 0;
     uint8_t _power_right = 0;

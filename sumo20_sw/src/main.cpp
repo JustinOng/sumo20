@@ -18,6 +18,8 @@ void setup() {
 
   robot.begin();
 
+  FastLED.setBrightness(100);
+
   pinMode(13, OUTPUT);
 }
 
@@ -38,8 +40,15 @@ void loop() {
     }
 
     robot.setLifter(IBus.readChannel(2));
+    
+    if (IBus.readChannel(9) > 1500) {
+      robot.setMode(Robot::MODE_AUTON);
+    } else {
+      robot.setMode(Robot::MODE_RC);
+    }
   } else {
     robot.setSpeed(0, 0);
+    robot.setMode(Robot::MODE_RC);
   }
 
 #ifdef LOG_CONTROLLER_VALUES

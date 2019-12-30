@@ -64,6 +64,9 @@ class Robot {
 
     Adafruit_SSD1306 *_display;
 
+    uint8_t _power_left = 0;
+    uint8_t _power_right = 0;
+
     void displayCurrent(void);
 };
 

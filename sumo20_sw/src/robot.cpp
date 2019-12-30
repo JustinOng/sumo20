@@ -39,8 +39,8 @@ void Robot::setSpeed(int8_t forward, int8_t turn) {
   if (abs(forward) < 3) forward = 0;
   if (abs(turn) < 3) turn = 0;
 
-  _drive->setSpeed(Drive::LEFT, (forward + turn * TURN_SCALE) * LEFT_SCALE);
-  _drive->setSpeed(Drive::RIGHT, (forward - turn * TURN_SCALE) * RIGHT_SCALE);
+  _power_left = (forward + turn * TURN_SCALE) * LEFT_SCALE;
+  _power_right = (forward - turn * TURN_SCALE) * RIGHT_SCALE;
 }
 
 void Robot::setVacuum(uint8_t power) {
@@ -77,6 +77,10 @@ void Robot::displayCurrent(void) {
   _display->display();
 }
 
+void Robot::setMode(Modes_t mode) {
+  _mode = mode;
+}
+
 void Robot::loop(void) {
   _distance_sensors->loop();
 
@@ -101,6 +105,8 @@ void Robot::loop(void) {
     ir[i] = analogRead(ir_pins[i]) < IR_THRESHOLD;
   }
 
+    _drive->setSpeed(Drive::LEFT, _power_left);
+    _drive->setSpeed(Drive::RIGHT, _power_right);
   FastLED.show();
 
   displayCurrent();

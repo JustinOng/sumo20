@@ -18,7 +18,30 @@ class Drive {
 
     Drive(Stream* serial);
     void setSpeed(Motor_t motor, int8_t velocity);
+    void requestFeedback(Motor_t motor);
+
+    int32_t getPos(Motor_t motor);
+
+    void loop(void);
   private:
+    // used to track what data we're expecting to receive on the serial port
+    enum Read_State_t {
+      NONE,
+      READING_POS,
+      READING_VEL
+    };
+
+    Read_State_t _read_state = NONE;
+    // extra contextual data for current read state
+    uint8_t _read_state_data;
+
+    // buffer to hold serial data
+    char _read_state_buffer[64];
+    uint8_t _read_state_len = 0;
+
+    float _pos[2];
+    float _vel[2];
+
     Stream* _serial;
 };
 

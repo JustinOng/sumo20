@@ -12,3 +12,57 @@ void Drive::setSpeed(Motor_t motor, int8_t velocity) {
   _serial->print(" ");
   _serial->println(map(velocity, -100, 100, -MAX_SPEED, MAX_SPEED));
 }
+
+void Drive::requestFeedback(Motor_t motor) {
+  if (_read_state != NONE) return;
+
+  _serial->print("f ");
+  _serial->println((uint8_t) motor);
+
+  _read_state = READING_POS;
+  _read_state_data = (uint8_t) motor;
+}
+
+int32_t Drive::getPos(Motor_t motor) {
+  return _pos[motor];
+}
+
+void Drive::loop(void) {
+  static elapsedMillis last_message;
+  char data;
+
+  while (_serial->available()) {
+    last_message = 0;
+    data = _serial->read();
+
+    if (_read_state == READING_POS) {
+      if (data == ' ') {
+        // _read_state_buffer contains full pos data
+        _pos[_read_state_data] = atof(_read_state_buffer);
+        _read_state_len = 0;
+
+        _read_state = READING_VEL;
+      } else {
+        _read_state_buffer[_read_state_len++] = data;
+      }
+    } else if (_read_state == READING_VEL) {
+      if (data == '\n') {
+        // _read_state_buffer contains full vel data
+        _vel[_read_state_data] = atof(_read_state_buffer);
+        _read_state_len = 0;
+
+        _read_state = NONE;
+      } else {
+        _read_state_buffer[_read_state_len++] = data;
+      }
+    } else {
+      Serial1.print("Received data while in NONE: ");
+      Serial1.println(data);
+    }
+  };
+
+  if (last_message > 1000 && _read_state != NONE) {
+    Serial1.println("Read timed out!");
+    _read_state = NONE;
+  }
+}

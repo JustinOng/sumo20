@@ -82,6 +82,7 @@ void Robot::setMode(Modes_t mode) {
 }
 
 void Robot::loop(void) {
+  _drive->loop();
   _distance_sensors->loop();
 
   for(byte i = 0; i < NUM_VL53L0X; i++) {

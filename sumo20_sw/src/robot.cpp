@@ -82,7 +82,10 @@ void Robot::setMode(Modes_t mode) {
 }
 
 void Robot::loop(void) {
+  static elapsedMillis last_feedback;
+
   _drive->loop();
+
   _distance_sensors->loop();
 
   for(byte i = 0; i < NUM_VL53L0X; i++) {
@@ -117,4 +120,10 @@ void Robot::loop(void) {
   FastLED.show();
 
   displayCurrent();
+
+  if (last_feedback > 50) {
+    last_feedback = 0;
+    _drive->requestFeedback();
+  }
+}
 }

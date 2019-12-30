@@ -18,7 +18,7 @@ class Drive {
 
     Drive(Stream* serial);
     void setSpeed(Motor_t motor, int8_t velocity);
-    void requestFeedback(Motor_t motor);
+    void requestFeedback(void);
 
     int32_t getPos(Motor_t motor);
 
@@ -42,6 +42,8 @@ class Drive {
     float _vel[2];
 
     Stream* _serial;
+    
+    void _requestFeedback(Motor_t motor);
 };
 
 #endif

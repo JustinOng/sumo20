@@ -13,7 +13,11 @@ void Drive::setSpeed(Motor_t motor, int8_t velocity) {
   _serial->println(map(velocity, -100, 100, -MAX_SPEED, MAX_SPEED));
 }
 
-void Drive::requestFeedback(Motor_t motor) {
+void Drive::requestFeedback(void) {
+  _requestFeedback(LEFT);
+}
+
+void Drive::_requestFeedback(Motor_t motor) {
   if (_read_state != NONE) return;
 
   _serial->print("f ");
@@ -42,6 +46,10 @@ void Drive::loop(void) {
         _read_state_len = 0;
 
         _read_state = NONE;
+
+        if (_read_state_data == LEFT) {
+          _requestFeedback(RIGHT);
+        }
       }
     } else {
       Serial1.print("Received data while in NONE: ");

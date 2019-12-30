@@ -36,8 +36,8 @@ void Robot::setSpeed(int8_t forward, int8_t turn) {
   lastUpdated = 0;
 
   // deadzone
-  if (abs(forward) < 5) forward = 0;
-  if (abs(turn) < 5) turn = 0;
+  if (abs(forward) < 3) forward = 0;
+  if (abs(turn) < 3) turn = 0;
 
   _drive->setSpeed(Drive::LEFT, (forward + turn * TURN_SCALE) * LEFT_SCALE);
   _drive->setSpeed(Drive::RIGHT, (forward - turn * TURN_SCALE) * RIGHT_SCALE);

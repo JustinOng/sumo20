@@ -13,8 +13,21 @@ void Drive::setSpeed(Motor_t motor, int8_t velocity) {
   _serial->println(map(velocity, -100, 100, -MAX_SPEED, MAX_SPEED));
 }
 
-void Drive::setPosition(Motor_t motor, int32_t target) {
-  _serial->print("p ");
+void Drive::incPosition(int32_t change_left, int32_t change_right) {
+  target_left = _pos[LEFT] + change_left;
+  target_right = _pos[RIGHT] + change_right;
+
+  _setPosition(LEFT, target_left);
+  _setPosition(RIGHT, target_right);
+}
+
+bool Drive::moveDone(void) {
+  return (abs(target_left - _pos[LEFT]) < POS_MOVE_THRESHOLD) &&
+    (abs(target_right - _pos[RIGHT]) < POS_MOVE_THRESHOLD);
+}
+
+void Drive::_setPosition(Motor_t motor, int32_t target) {
+  _serial->print("t ");
   _serial->print((uint8_t) motor);
   _serial->print(" ");
   _serial->println(target);

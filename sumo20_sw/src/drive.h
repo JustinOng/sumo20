@@ -8,6 +8,9 @@
 // 0.90 * 12.6 * 1400 * 4000 / 60 = 1058400
 #define MAX_SPEED 900000
 
+// max encoder counts under which a position movement is treated as finished
+#define POS_MOVE_THRESHOLD 8000
+
 class Drive {
   public:
     // axis on the odrive
@@ -18,7 +21,8 @@ class Drive {
 
     Drive(Stream* serial);
     void setSpeed(Motor_t motor, int8_t velocity);
-    void setPosition(Motor_t motor, int32_t target);
+    void incPosition(int32_t change_left, int32_t change_right);
+    bool moveDone(void);
     void requestFeedback(void);
 
     int32_t getPos(Motor_t motor);
@@ -42,9 +46,13 @@ class Drive {
     float _pos[2];
     float _vel[2];
 
+    int32_t target_left;
+    int32_t target_right;
+
     Stream* _serial;
     
     void _requestFeedback(Motor_t motor);
+    void _setPosition(Motor_t motor, int32_t target);
 };
 
 #endif

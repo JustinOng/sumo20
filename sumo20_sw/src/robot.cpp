@@ -137,8 +137,6 @@ void Robot::loop(void) {
 
 void Robot::updateAutonState(void) {
   Auton_State_t new_state = INVALID;
-  static int32_t target_left = 0;
-  static int32_t target_right = 0;
 
   switch(_auton_state) {
     case NONE:
@@ -148,17 +146,22 @@ void Robot::updateAutonState(void) {
     case ST1_TURN:
       if (_auton_state != _pAuton_state) {
         Serial1.println("Entered ST1_TURN");
-        target_left = _drive->getPos(Drive::LEFT) + (3 * 14 * 4000);
-        Serial1.print("Target: ");
-        Serial1.println(target_left);
 
-        _drive->setPosition(Drive::LEFT, target_left);
+        _drive->incPosition(3 * 14 * 4000, 0);
       }
 
-      Serial1.print("Current pos: ");
-      Serial1.println(_drive->getPos(Drive::LEFT));
+      if (_drive->moveDone()) {
+        new_state = ST2_FW;
+      }
+      break;
+    case ST2_FW:
+      if (_auton_state != _pAuton_state) {
+        Serial1.println("Entered ST2_FW");
+        
+        _drive->incPosition(10 * 14 * 4000, -10 * 14 * 4000);
+      }
 
-      if (_drive->getPos(Drive::LEFT) > target_left) {
+      if (_drive->moveDone()) {
         new_state = DONE;
       }
       break;

@@ -13,7 +13,7 @@ Robot::Robot(void) {
 }
 
 void Robot::begin(void) {
-  Serial3.begin(115200);
+  Serial3.begin(921600);
   LEDS.addLeds<WS2812B, PIN_LED_INT, GRB>(leds_int, NUM_LED_INT);
 
   // initialises 19/18 as SCL/SDA
@@ -129,7 +129,7 @@ void Robot::loop(void) {
 
   displayCurrent();
 
-  if (last_feedback > 50) {
+  if (last_feedback > 10) {
     last_feedback = 0;
     _drive->requestFeedback();
   }

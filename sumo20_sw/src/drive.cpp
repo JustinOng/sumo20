@@ -17,8 +17,8 @@ void Drive::incPosition(int32_t change_left, int32_t change_right) {
   target_left = _pos[LEFT] + change_left;
   target_right = _pos[RIGHT] + change_right;
 
-  _setPosition(LEFT, target_left);
-  _setPosition(RIGHT, target_right);
+  _setPosition(LEFT, change_left);
+  _setPosition(RIGHT, change_right);
 }
 
 bool Drive::moveDone(void) {
@@ -27,7 +27,7 @@ bool Drive::moveDone(void) {
 }
 
 void Drive::_setPosition(Motor_t motor, int32_t target) {
-  _serial->print("t ");
+  _serial->print("it ");
   _serial->print((uint8_t) motor);
   _serial->print(" ");
   _serial->println(target);

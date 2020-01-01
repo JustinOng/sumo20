@@ -13,7 +13,7 @@ Robot::Robot(void) {
 }
 
 void Robot::begin(void) {
-  Serial3.begin(921600);
+  Serial3.begin(115200);
   LEDS.addLeds<WS2812B, PIN_LED_INT, GRB>(leds_int, NUM_LED_INT);
 
   // initialises 19/18 as SCL/SDA
@@ -140,17 +140,18 @@ void Robot::updateAutonState(void) {
 
   switch(_auton_state) {
     case NONE:
-      new_state = ST1_TURN;
-      Serial1.println("Enetered NONE");
+      new_state = ST1_R_REV;
+      Serial1.println("Entered NONE");
       break;
-    case ST1_TURN:
+    case ST1_R_REV:
       if (_auton_state != _pAuton_state) {
         Serial1.println("Entered ST1_TURN");
 
-        _drive->incPosition(3 * 14 * 4000, 0);
+        _drive->incPosition(_drive->LEFT, 100 * 4000);
+        _drive->incPosition(_drive->RIGHT, -10 * 4000);
       }
 
-      if (_drive->moveDone()) {
+      if (_drive->moveDone(_drive->RIGHT)) {
         new_state = ST2_FW;
       }
       break;
@@ -158,10 +159,10 @@ void Robot::updateAutonState(void) {
       if (_auton_state != _pAuton_state) {
         Serial1.println("Entered ST2_FW");
         
-        _drive->incPosition(10 * 14 * 4000, -10 * 14 * 4000);
+        _drive->incPosition(_drive->RIGHT, 150 * 4000);
       }
 
-      if (_drive->moveDone()) {
+      if (_drive->moveDone(_drive->LEFT) && _drive->moveDone(_drive->RIGHT)) {
         new_state = DONE;
       }
       break;

@@ -18,8 +18,8 @@ class Drive {
 
     Drive(Stream* serial);
     void setSpeed(Motor_t motor, int8_t velocity);
-    void incPosition(int32_t change_left, int32_t change_right);
-    bool moveDone(void);
+    void incPosition(Motor_t motor, int32_t change);
+    bool moveDone(Motor_t motor);
     void requestFeedback(void);
     void requestCtrlMode(void);
 
@@ -54,7 +54,6 @@ class Drive {
     Stream* _serial;
     
     void _requestFeedback(Motor_t motor);
-    void _incPosition(Motor_t motor, int32_t change);
     void _requestCtrlMode(Motor_t motor);
 };
 

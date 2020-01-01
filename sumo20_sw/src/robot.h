@@ -62,7 +62,7 @@ class Robot {
   private:
     enum Auton_State_t {
       NONE,
-      ST1_TURN, // turn away from starting position
+      ST1_R_REV, // turn away from starting position
       ST2_FW,   // move forward
       DONE,
       INVALID

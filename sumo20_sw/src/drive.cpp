@@ -17,20 +17,34 @@ void Drive::incPosition(int32_t change_left, int32_t change_right) {
   target_left = _pos[LEFT] + change_left;
   target_right = _pos[RIGHT] + change_right;
 
-  _setPosition(LEFT, change_left);
-  _setPosition(RIGHT, change_right);
+  _incPosition(LEFT, change_left);
+  _incPosition(RIGHT, change_right);
 }
 
 bool Drive::moveDone(void) {
-  return (abs(target_left - _pos[LEFT]) < POS_MOVE_THRESHOLD) &&
-    (abs(target_right - _pos[RIGHT]) < POS_MOVE_THRESHOLD);
+  return _ctrl_mode[LEFT] == 3 && _ctrl_mode[RIGHT] == 3;
 }
 
-void Drive::_setPosition(Motor_t motor, int32_t target) {
+void Drive::_incPosition(Motor_t motor, int32_t change) {
   _serial->print("it ");
   _serial->print((uint8_t) motor);
   _serial->print(" ");
-  _serial->println(target);
+  _serial->println(change);
+}
+
+void Drive::requestCtrlMode(void) {
+  _requestCtrlMode(LEFT);
+}
+
+void Drive::_requestCtrlMode(Motor_t motor) {
+  if (_read_state != NONE) return;
+
+  _serial->print("r axis");
+  _serial->print(motor);
+  _serial->println(".controller.config.control_mode");
+
+  _read_state = READING_CTRL_MODE;
+  _read_state_data = (uint8_t) motor;
 }
 
 void Drive::requestFeedback(void) {
@@ -51,29 +65,48 @@ int32_t Drive::getPos(Motor_t motor) {
   return _pos[motor];
 }
 
+uint8_t Drive::getCtrlMode(Motor_t motor) {
+  return _ctrl_mode[motor];
+}
+
 void Drive::loop(void) {
   static elapsedMillis last_message;
   char data;
+
+  uint8_t tmp;
 
   while (_serial->available()) {
     last_message = 0;
     data = _serial->read();
 
-    if (_read_state == READING_FEEDBACK) {
-      _read_state_buffer[_read_state_len++] = data;
-      if (data == '\n') {
+    _read_state_buffer[_read_state_len++] = data;
+    if (data == '\n') {
+      if (_read_state == READING_FEEDBACK) {
         sscanf(_read_state_buffer, "%f %f", &_pos[_read_state_data], &_vel[_read_state_data]);
+      
         _read_state_len = 0;
-
         _read_state = NONE;
 
         if (_read_state_data == LEFT) {
           _requestFeedback(RIGHT);
         }
+      } else if (_read_state == READING_CTRL_MODE) {
+        sscanf(_read_state_buffer, "%hhu", &tmp);
+        _ctrl_mode[_read_state_data] = tmp;
+      
+        _read_state_len = 0;
+        _read_state = NONE;
+
+        if (_read_state_data == LEFT) {
+          _requestCtrlMode(RIGHT);
+        }
+      } else {
+        Serial1.print("Received data while in NONE: ");
+        Serial1.write(_read_state_buffer, _read_state_len);
+      
+        _read_state_len = 0;
+        _read_state = NONE;
       }
-    } else {
-      Serial1.print("Received data while in NONE: ");
-      Serial1.println(data);
     }
   };
 

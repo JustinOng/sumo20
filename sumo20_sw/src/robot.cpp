@@ -131,7 +131,7 @@ void Robot::loop(void) {
 
   if (last_feedback > 10) {
     last_feedback = 0;
-    _drive->requestFeedback();
+    _drive->requestCtrlMode();
   }
 }
 

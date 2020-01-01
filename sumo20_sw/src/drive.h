@@ -8,9 +8,6 @@
 // 0.90 * 12.6 * 1400 * 4000 / 60 = 1058400
 #define MAX_SPEED 900000
 
-// max encoder counts under which a position movement is treated as finished
-#define POS_MOVE_THRESHOLD 8000
-
 class Drive {
   public:
     // axis on the odrive
@@ -24,15 +21,18 @@ class Drive {
     void incPosition(int32_t change_left, int32_t change_right);
     bool moveDone(void);
     void requestFeedback(void);
+    void requestCtrlMode(void);
 
     int32_t getPos(Motor_t motor);
+    uint8_t getCtrlMode(Motor_t motor);
 
     void loop(void);
   private:
     // used to track what data we're expecting to receive on the serial port
     enum Read_State_t {
       NONE,
-      READING_FEEDBACK
+      READING_FEEDBACK,
+      READING_CTRL_MODE
     };
 
     Read_State_t _read_state = NONE;
@@ -46,13 +46,16 @@ class Drive {
     float _pos[2];
     float _vel[2];
 
+    uint8_t _ctrl_mode[2] = {5, 5};
+
     int32_t target_left;
     int32_t target_right;
 
     Stream* _serial;
     
     void _requestFeedback(Motor_t motor);
-    void _setPosition(Motor_t motor, int32_t target);
+    void _incPosition(Motor_t motor, int32_t change);
+    void _requestCtrlMode(Motor_t motor);
 };
 
 #endif

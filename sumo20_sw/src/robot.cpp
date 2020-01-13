@@ -104,12 +104,12 @@ void Robot::loop(void) {
       continue;
     }
 
-    if (_distance_sensors->distance[i] > 1000) {
+    if (_distance_sensors->distance[i] > PROX_THRESHOLD) {
       leds_int[led_index] = CRGB::Red;
       continue;
     }
 
-    leds_int[led_index] = map(_distance_sensors->distance[i], 0, 1000, 0, 255) << 8;
+    leds_int[led_index] = map(_distance_sensors->distance[i], PROX_THRESHOLD, 0, 0, 255) << 8;
   }
 
   for (byte i = 0; i < NUM_IR; i++) {

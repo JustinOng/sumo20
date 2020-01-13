@@ -28,6 +28,9 @@
 #define IR_THRESHOLD 300
 #define NUM_IR 4
 
+// ignore detections above this value
+#define PROX_THRESHOLD 500
+
 const uint8_t ir_pins[NUM_IR] = {23, 15, 14, 20};
 
 enum {

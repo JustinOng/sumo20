@@ -147,8 +147,8 @@ void Robot::updateAutonState(void) {
       if (_auton_state != _pAuton_state) {
         Serial1.println("Entered ST1_TURN");
 
-        _drive->incPosition(_drive->LEFT, 100 * 4000);
-        _drive->incPosition(_drive->RIGHT, -10 * 4000);
+        _drive->incPosition(_drive->LEFT, 50 * 4000);
+        _drive->incPosition(_drive->RIGHT, -3 * 4000);
       }
 
       if (_drive->moveDone(_drive->RIGHT)) {
@@ -159,7 +159,7 @@ void Robot::updateAutonState(void) {
       if (_auton_state != _pAuton_state) {
         Serial1.println("Entered ST2_FW");
         
-        _drive->incPosition(_drive->RIGHT, 150 * 4000);
+        _drive->incPosition(_drive->RIGHT, 100 * 4000);
       }
 
       if (_drive->moveDone(_drive->LEFT) && _drive->moveDone(_drive->RIGHT)) {

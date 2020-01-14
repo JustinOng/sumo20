@@ -138,12 +138,91 @@ void Robot::loop(void) {
 void Robot::updateAutonState(void) {
   Auton_State_t new_state = INVALID;
 
+  uint16_t *distance = _distance_sensors->distance;
+  int16_t vel_left = 0, vel_right = 0, error = 0;
+
   switch(_auton_state) {
     case NONE:
-      new_state = ST1_R_REV;
+      new_state = SEEK;
       Serial1.println("Entered NONE");
       break;
-    case ST1_R_REV:
+    case TRACK:
+      if (_auton_state != _pAuton_state) {
+        Serial1.println("Entered TRACK");
+      }
+      /*
+        sensors are arranged
+          scoop
+        0  1  2  3
+           body
+        physically from left to right
+      */
+      if (
+        distance[0] > PROX_THRESHOLD &&
+        distance[1] > PROX_THRESHOLD &&
+        distance[2] > PROX_THRESHOLD &&
+        distance[3] > PROX_THRESHOLD
+      ) {
+        // if none of the sensors see anything theres nothing to track, move to SEEK
+        new_state = SEEK;
+      }
+
+      vel_left = TRACK_BASE_SPEED;
+      vel_right = TRACK_BASE_SPEED;
+
+      if (distance[1] > PROX_THRESHOLD && distance[2] < PROX_THRESHOLD) {
+        // left sensor does not see, right sensor sees
+        // spin left
+        vel_right += TRACK_TURN_SPEED;
+      } else if (distance[1] < PROX_THRESHOLD && distance[2] > PROX_THRESHOLD) {
+        // left sensor sees, right sensor does not see
+        // spin right
+        vel_left += TRACK_TURN_SPEED;
+      }
+
+      // add the difference between s1 and s2 to power
+      if (distance[1] < PROX_THRESHOLD && distance[2] < PROX_THRESHOLD) {
+        error = distance[1] - distance[2];
+
+        error = max(-TRACK_ERROR_MAX, min(TRACK_ERROR_MAX, error));
+
+        vel_left -= error * TRACK_ERROR_KP;
+        vel_right += error * TRACK_ERROR_KP;;
+      }
+
+      vel_left = max(0, min(vel_left, 100));
+      vel_right = max(0, min(vel_right, 100));
+
+      /*
+      Serial1.print("Error: ");
+      Serial1.print(error);
+      Serial1.print(" Left: ");
+      Serial1.print(vel_left);
+      Serial1.print(" Right: ");
+      Serial1.println(vel_right);
+      */
+
+      _drive->setSpeed(Drive::LEFT, -vel_left);
+      _drive->setSpeed(Drive::RIGHT, vel_right);
+      break;
+    case SEEK:
+      if (_auton_state != _pAuton_state) {
+        Serial1.println("Entered SEEK");
+      }
+
+      if (
+        distance[0] < PROX_THRESHOLD ||
+        distance[1] < PROX_THRESHOLD ||
+        distance[2] < PROX_THRESHOLD ||
+        distance[3] < PROX_THRESHOLD
+      ) {
+        new_state = TRACK;
+      }
+
+      _drive->setSpeed(Drive::LEFT, SEEK_SPEED);
+      _drive->setSpeed(Drive::RIGHT, SEEK_SPEED);
+      break;
+    case START_ST1_R_REV:
       if (_auton_state != _pAuton_state) {
         Serial1.println("Entered ST1_TURN");
 
@@ -152,10 +231,10 @@ void Robot::updateAutonState(void) {
       }
 
       if (_drive->moveDone(_drive->RIGHT)) {
-        new_state = ST2_FW;
+        new_state = START_ST2_FW;
       }
       break;
-    case ST2_FW:
+    case START_ST2_FW:
       if (_auton_state != _pAuton_state) {
         Serial1.println("Entered ST2_FW");
         

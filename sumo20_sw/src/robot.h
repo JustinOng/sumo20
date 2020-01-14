@@ -31,6 +31,20 @@
 // ignore detections above this value
 #define PROX_THRESHOLD 500
 
+// configuration for autonomous states
+
+// base speed, TRACK_TURN_SPEED is used to adjust
+// so sensors 1 and 3 see the robot
+#define TRACK_BASE_SPEED 10
+// how fast to turn, 0 - 100
+#define TRACK_TURN_SPEED 10
+
+#define TRACK_ERROR_MAX 100
+#define TRACK_ERROR_KP 0.2
+
+// how fast to turn, 0 - 100
+#define SEEK_SPEED 20
+
 const uint8_t ir_pins[NUM_IR] = {23, 15, 14, 20};
 
 enum {
@@ -65,8 +79,10 @@ class Robot {
   private:
     enum Auton_State_t {
       NONE,
-      ST1_R_REV, // turn away from starting position
-      ST2_FW,   // move forward
+      TRACK,
+      SEEK,
+      START_ST1_R_REV, // turn away from starting position
+      START_ST2_FW,   // move forward
       DONE,
       INVALID
     };

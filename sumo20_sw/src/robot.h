@@ -94,6 +94,7 @@ class Robot {
 
     // true if line is seen
     bool ir[NUM_IR] = {0};
+    uint16_t ir_raw[NUM_IR] = {0};
     CRGB leds_int[NUM_LED_INT];
 
     Adafruit_SSD1306 *_display;
@@ -105,7 +106,7 @@ class Robot {
 
     Auton_State_t _auton_state, _pAuton_state = NONE;
 
-    void displayCurrent(void);
+    void updateDisplay(void);
     void updateAutonState(void);
 };
 

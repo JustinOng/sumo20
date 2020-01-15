@@ -52,7 +52,7 @@ void Robot::setLifter(uint16_t pulsewidth) {
   _lifter->writeMicroseconds(pulsewidth);
 }
 
-void Robot::displayCurrent(void) {
+void Robot::updateDisplay(void) {
   static elapsedMillis last_update;
 
   if (last_update < 100) return;
@@ -68,7 +68,30 @@ void Robot::displayCurrent(void) {
   int8_t current = (corrected_voltage - 2.5) * 100;
 
   _display->clearDisplay();
+
   _display->setCursor(0, 0);
+  _display->print(ir[0]);
+  _display->print(" ");
+  _display->print(ir_raw[0]);
+
+  _display->setCursor(120, 0);
+  _display->print(ir[1]);
+  _display->setCursor(90, 0);
+  _display->print(" ");
+  _display->print(ir_raw[1]);
+
+  _display->setCursor(120, 56);
+  _display->print(ir[2]);
+  _display->setCursor(90, 56);
+  _display->print(" ");
+  _display->print(ir_raw[2]);
+
+  _display->setCursor(0, 56);
+  _display->print(ir[3]);
+  _display->print(" ");
+  _display->print(ir_raw[3]);
+
+  _display->setCursor(0, 10);
   _display->print("Current: ");
   _display->print(current / 10);
   _display->print('.');
@@ -113,7 +136,8 @@ void Robot::loop(void) {
   }
 
   for (byte i = 0; i < NUM_IR; i++) {
-    ir[i] = analogRead(ir_pins[i]) < IR_THRESHOLD;
+    ir_raw[i] = analogRead(ir_pins[i]);
+    ir[i] = ir_raw[i] < IR_THRESHOLD;
   }
 
   if (_mode == MODE_RC) {
@@ -127,7 +151,7 @@ void Robot::loop(void) {
 
   FastLED.show();
 
-  displayCurrent();
+  updateDisplay();
 
   if (last_feedback > 10) {
     last_feedback = 0;

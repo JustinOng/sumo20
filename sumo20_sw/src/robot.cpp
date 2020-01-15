@@ -91,7 +91,16 @@ void Robot::updateDisplay(void) {
   _display->print(" ");
   _display->print(ir_raw[3]);
 
-  _display->setCursor(0, 10);
+  _display->setCursor(0, 15);
+  _display->print(_distance_sensors->distance[3]);
+  _display->setCursor(32, 15);
+  _display->print(_distance_sensors->distance[2]);
+  _display->setCursor(64, 15);
+  _display->print(_distance_sensors->distance[1]);
+  _display->setCursor(96, 15);
+  _display->print(_distance_sensors->distance[0]);
+
+  _display->setCursor(0, 30);
   _display->print("Current: ");
   _display->print(current / 10);
   _display->print('.');

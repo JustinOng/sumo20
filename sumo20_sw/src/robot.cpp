@@ -13,7 +13,7 @@ Robot::Robot(void) {
 }
 
 void Robot::begin(void) {
-  Serial3.begin(115200);
+  Serial3.begin(921600);
   LEDS.addLeds<WS2812B, PIN_LED_INT, GRB>(leds_int, NUM_LED_INT);
 
   // initialises 19/18 as SCL/SDA
@@ -141,6 +141,8 @@ void Robot::loop(void) {
       continue;
     }
 
+    dist_last_seen[i] = millis();
+
     leds_int[led_index] = map(_distance_sensors->distance[i], PROX_THRESHOLD, 0, 0, 255) << 8;
   }
 
@@ -185,6 +187,8 @@ void Robot::loop(void) {
 }
 
 void Robot::updateAutonState(void) {
+  static elapsedMillis last_state_change;
+
   Auton_State_t new_state = INVALID;
 
   uint16_t *distance = _distance_sensors->distance;
@@ -213,7 +217,7 @@ void Robot::updateAutonState(void) {
         distance[3] > PROX_THRESHOLD
       ) {
         // if none of the sensors see anything theres nothing to track, move to SEEK
-        new_state = SEEK;
+        new_state = SEEK_SPIN;
       }
 
       vel_left = TRACK_BASE_SPEED;
@@ -254,9 +258,18 @@ void Robot::updateAutonState(void) {
       _drive->setSpeed(Drive::LEFT, -vel_left);
       _drive->setSpeed(Drive::RIGHT, vel_right);
       break;
-    case SEEK:
+    case SEEK_SPIN:
       if (_auton_state != _pAuton_state) {
-        Serial1.println("Entered SEEK");
+        Serial1.println("Entered SEEK_SPIN");
+
+        if (dist_last_seen[0] < dist_last_seen[3]) {
+          // target was last seen on the right so spin right
+          _drive->setSpeed(Drive::LEFT, -SEEK_SPIN_SPEED);
+          _drive->setSpeed(Drive::RIGHT, -SEEK_SPIN_SPEED);
+        } else {
+          _drive->setSpeed(Drive::LEFT, SEEK_SPIN_SPEED);
+          _drive->setSpeed(Drive::RIGHT, SEEK_SPIN_SPEED);
+        }
       }
 
       if (
@@ -268,15 +281,32 @@ void Robot::updateAutonState(void) {
         new_state = TRACK;
       }
 
-      _drive->setSpeed(Drive::LEFT, SEEK_SPEED);
-      _drive->setSpeed(Drive::RIGHT, SEEK_SPEED);
+      if (last_state_change > SEEK_SPIN_DURATION) {
+        new_state = SEEK_FORWARD;
+      }
+      break;
+    case SEEK_FORWARD:
+      if (_auton_state != _pAuton_state) {
+        _drive->setSpeed(Drive::LEFT, SEEK_FORWARD_SPEED);
+        _drive->setSpeed(Drive::RIGHT, SEEK_FORWARD_SPEED);
+      }
+
+      if (
+        distance[0] < PROX_THRESHOLD ||
+        distance[1] < PROX_THRESHOLD ||
+        distance[2] < PROX_THRESHOLD ||
+        distance[3] < PROX_THRESHOLD
+      ) {
+        new_state = TRACK;
+      }
+
       break;
     case START_ST1_R_REV:
       if (_auton_state != _pAuton_state) {
-        Serial1.println("Entered ST1_TURN");
+        Serial1.println("Entered START_ST1_R_REV");
 
-        _drive->incPosition(_drive->LEFT, 50 * 4000);
-        _drive->incPosition(_drive->RIGHT, -2 * 4000);
+        _drive->incPosition(_drive->LEFT, 45 * 4000);
+        _drive->incPosition(_drive->RIGHT, -1 * 4000);
       }
 
       if (_drive->moveDone(_drive->RIGHT)) {
@@ -285,13 +315,13 @@ void Robot::updateAutonState(void) {
       break;
     case START_ST2_FW:
       if (_auton_state != _pAuton_state) {
-        Serial1.println("Entered ST2_FW");
+        Serial1.println("Entered START_ST2_FW");
         
         _drive->incPosition(_drive->RIGHT, 105 * 4000);
       }
 
       if (_drive->moveDone(_drive->LEFT) && _drive->moveDone(_drive->RIGHT)) {
-        new_state = SEEK;
+        new_state = TRACK;
       }
       break;
     case DONE:
@@ -308,5 +338,6 @@ void Robot::updateAutonState(void) {
 
   if (new_state != INVALID) {
     _auton_state = new_state;
+    last_state_change = 0;
   }
 }

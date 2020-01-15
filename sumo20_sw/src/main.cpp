@@ -21,6 +21,9 @@ void setup() {
   FastLED.setBrightness(100);
 
   pinMode(13, OUTPUT);
+
+  // seed with internal temperature sensor
+  randomSeed(analogRead(38));
 }
 
 void loop() {

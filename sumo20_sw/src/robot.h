@@ -43,7 +43,17 @@
 #define TRACK_ERROR_KP 0.2
 
 // how fast to turn, 0 - 100
-#define SEEK_SPEED 20
+#define SEEK_SPIN_SPEED 40
+// how long to stay in the SEEK state in ms
+// after which, move to SEEK_FORWARD
+#define SEEK_SPIN_DURATION 1000
+
+// how fast to move forward, 0 - 100
+#define SEEK_FORWARD_SPEED 20
+
+// min and max of how much to turn when a line is seen
+#define FLEE_LINE_TURN_MIN 10000
+#define FLEE_LINE_TURN_MAX 40000
 
 const uint8_t ir_pins[NUM_IR] = {23, 15, 14, 20};
 
@@ -80,7 +90,8 @@ class Robot {
     enum Auton_State_t {
       NONE,
       TRACK,
-      SEEK,
+      SEEK_SPIN,
+      SEEK_FORWARD,
       START_ST1_R_REV, // turn away from starting position
       START_ST2_FW,   // move forward
       DONE,
@@ -91,6 +102,8 @@ class Robot {
     Servo *_vacuum;
     Servo *_lifter;
     Distance_Sensors *_distance_sensors;
+
+    uint32_t dist_last_seen[NUM_VL53L0X] = {0};
 
     // true if line is seen
     bool ir[NUM_IR] = {0};

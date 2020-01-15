@@ -301,6 +301,27 @@ void Robot::updateAutonState(void) {
       }
 
       break;
+    case FLEE_LINE:
+      if (_auton_state != _pAuton_state) {
+        Serial1.println("Entered FLEE_LINE");
+        
+        vel_right = random(FLEE_LINE_TURN_MIN, FLEE_LINE_TURN_MAX);
+        vel_left = -vel_right;
+
+        // pick a random direction
+        if (random(0, 1)) {
+          vel_left *= -1;
+          vel_right *= -1;
+        }
+
+        _drive->incPosition(_drive->LEFT, vel_left);
+        _drive->incPosition(_drive->RIGHT, vel_right);
+      }
+
+      if (_drive->moveDone(_drive->LEFT) && _drive->moveDone(_drive->RIGHT)) {
+        new_state = SEEK_FORWARD;
+      }
+      break;
     case START_ST1_R_REV:
       if (_auton_state != _pAuton_state) {
         Serial1.println("Entered START_ST1_R_REV");
@@ -335,6 +356,10 @@ void Robot::updateAutonState(void) {
   }
 
   _pAuton_state = _auton_state;
+
+  if (ir[0] || ir[1] || ir[2] || ir[3]) {
+    new_state = FLEE_LINE;
+  }
 
   if (new_state != INVALID) {
     _auton_state = new_state;

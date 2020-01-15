@@ -92,6 +92,7 @@ class Robot {
       TRACK,
       SEEK_SPIN,
       SEEK_FORWARD,
+      FLEE_LINE,
       START_ST1_R_REV, // turn away from starting position
       START_ST2_FW,   // move forward
       DONE,

@@ -101,8 +101,8 @@ class Robot {
     
     Modes_t _mode = MODE_RC;
 
-    uint8_t _power_left = 0;
-    uint8_t _power_right = 0;
+    int8_t _power_left = 0;
+    int8_t _power_right = 0;
 
     Auton_State_t _auton_state, _pAuton_state = NONE;
 

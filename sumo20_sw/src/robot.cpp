@@ -150,8 +150,24 @@ void Robot::loop(void) {
   }
 
   if (_mode == MODE_RC) {
-    _drive->setSpeed(Drive::LEFT, _power_left);
-    _drive->setSpeed(Drive::RIGHT, _power_right);
+    if (
+      (ir[IR_FRONT_LEFT] && _power_left < 0) ||  // if forward yet front sensor triggered
+      (ir[IR_REAR_LEFT] && _power_left > 0)      // if reverse yet rear sensor triggered
+    ) {
+      _drive->setSpeed(Drive::LEFT, 0);
+    } else {
+      _drive->setSpeed(Drive::LEFT, _power_left);
+    }
+
+    if (
+      (ir[IR_FRONT_RIGHT] && _power_right > 0) || // if forward yet front sensor triggered
+      (ir[IR_REAR_RIGHT] && _power_right < 0)     // if reverse yet rear sensor triggered
+    ) {
+      _drive->setSpeed(Drive::RIGHT, 0);
+    } else {
+      _drive->setSpeed(Drive::RIGHT, _power_right);
+    }
+
     leds_int[0] = CRGB::Green;
   } else {
     updateAutonState();

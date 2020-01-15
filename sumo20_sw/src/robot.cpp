@@ -167,7 +167,7 @@ void Robot::updateAutonState(void) {
 
   switch(_auton_state) {
     case NONE:
-      new_state = SEEK;
+      new_state = START_ST1_R_REV;
       Serial1.println("Entered NONE");
       break;
     case TRACK:
@@ -177,7 +177,7 @@ void Robot::updateAutonState(void) {
       /*
         sensors are arranged
           scoop
-        0  1  2  3
+        3  2  1  0
            body
         physically from left to right
       */
@@ -251,7 +251,7 @@ void Robot::updateAutonState(void) {
         Serial1.println("Entered ST1_TURN");
 
         _drive->incPosition(_drive->LEFT, 50 * 4000);
-        _drive->incPosition(_drive->RIGHT, -3 * 4000);
+        _drive->incPosition(_drive->RIGHT, -2 * 4000);
       }
 
       if (_drive->moveDone(_drive->RIGHT)) {
@@ -262,11 +262,11 @@ void Robot::updateAutonState(void) {
       if (_auton_state != _pAuton_state) {
         Serial1.println("Entered ST2_FW");
         
-        _drive->incPosition(_drive->RIGHT, 100 * 4000);
+        _drive->incPosition(_drive->RIGHT, 105 * 4000);
       }
 
       if (_drive->moveDone(_drive->LEFT) && _drive->moveDone(_drive->RIGHT)) {
-        new_state = DONE;
+        new_state = SEEK;
       }
       break;
     case DONE:

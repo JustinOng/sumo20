@@ -37,7 +37,11 @@ void loop() {
 
     robot.setSpeed(forward, turn);
     if (IBus.readChannel(6) > 1500) {
-      robot.setVacuum(VACUUM_ON);
+      if (IBus.readChannel(7) > 1500) {
+        robot.setVacuumRaw(IBus.readChannel(4));
+      } else {
+        robot.setVacuum(VACUUM_ON);
+      }
     } else {
       robot.setVacuum(0);
     }

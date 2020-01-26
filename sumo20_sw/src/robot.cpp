@@ -45,7 +45,11 @@ void Robot::setSpeed(int8_t forward, int8_t turn) {
 
 void Robot::setVacuum(uint8_t power) {
   // power: 0 - 100
-  _vacuum->writeMicroseconds(map(power, 0, 100, 1000, 2000));
+  setVacuumRaw(map(power, 0, 100, 1000, 2000));
+}
+
+void Robot::setVacuumRaw(uint16_t power) {
+  _vacuum->writeMicroseconds(power);
 }
 
 void Robot::setLifter(uint16_t pulsewidth) {

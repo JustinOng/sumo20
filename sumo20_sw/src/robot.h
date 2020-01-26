@@ -81,6 +81,7 @@ class Robot {
     void begin(void);
     void setSpeed(int8_t forward, int8_t turn);
     void setVacuum(uint8_t power);
+    void setVacuumRaw(uint16_t power);
     void setLifter(uint16_t pulsewidth);
 
     void setMode(Modes_t mode);

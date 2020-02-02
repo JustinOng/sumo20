@@ -112,8 +112,9 @@ void Drive::loop(void) {
     }
   };
 
-  /*if (last_message > 1000 && _read_state != NONE) {
+  if (last_message > 1000 && _read_state != NONE) {
     Serial1.println("Read timed out!");
+    last_message = 0;
     _read_state = NONE;
-  }*/
+  }
 }

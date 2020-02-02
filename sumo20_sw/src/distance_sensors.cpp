@@ -45,6 +45,11 @@ void Distance_Sensors::loop(void) {
     if (!initialised[i]) continue;
 
     uint16_t val = distance_sensors[i].readReg16Bit(distance_sensors[i].RESULT_RANGE_STATUS + 10);
+
+    if (val == 0) {
+      val = 8190;
+    }
+    
     distance[i] = val;
   }
 }

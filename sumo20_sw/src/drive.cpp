@@ -11,6 +11,12 @@ void Drive::setVel(Motor_t motor, int8_t velocity) {
   _serial->print((uint8_t) motor);
   _serial->print(" ");
   _serial->println(map(velocity, -100, 100, -MAX_SPEED, MAX_SPEED));
+
+  _set_vel[motor] = velocity;
+}
+
+uint8_t Drive::getVel(Motor_t motor) {
+  return _set_vel[motor];
 }
 
 bool Drive::moveDone(Motor_t motor) {
@@ -106,8 +112,8 @@ void Drive::loop(void) {
     }
   };
 
-  if (last_message > 1000 && _read_state != NONE) {
+  /*if (last_message > 1000 && _read_state != NONE) {
     Serial1.println("Read timed out!");
     _read_state = NONE;
-  }
+  }*/
 }

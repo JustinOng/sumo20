@@ -9,6 +9,8 @@ Robot::Robot(void) {
   _vacuum->attach(PIN_VACUUM);
   _lifter->attach(PIN_LIFTER);
 
+  setVacuum(0);
+
   _display = new Adafruit_SSD1306(128, 64, &Wire, -1);
 }
 
@@ -41,6 +43,10 @@ void Robot::setSpeed(int8_t forward, int8_t turn) {
 
   _power_left = (forward + turn * TURN_SCALE) * LEFT_SCALE;
   _power_right = (forward - turn * TURN_SCALE) * RIGHT_SCALE;
+}
+
+void Robot::startVacuumOnMove(bool start) {
+  _vacuum_on_move = start;
 }
 
 void Robot::setVacuum(uint8_t power) {
@@ -174,10 +180,25 @@ void Robot::loop(void) {
       _drive->setVel(Drive::RIGHT, _power_right);
     }
 
-    leds_int[0] = CRGB::Green;
+    if (_vacuum_on_move && (millis() % 500 < 250)) {
+      leds_int[0] = CRGB::Black;
+    } else {
+      leds_int[0] = CRGB::Green;
+    }
   } else {
     updateAutonState();
     leds_int[0] = CRGB::Blue;
+  }
+
+  if (
+    (_mode == MODE_RC && (_drive->getVel(Drive::LEFT) != 0 || _drive->getVel(Drive::RIGHT) != 0)) ||
+    _mode == MODE_AUTON
+  ) {
+    if (_vacuum_on_move) {
+      Serial1.println("Starting vacuum");
+      _vacuum_on_move = false;
+      setVacuum(VACUUM_ON);
+    }
   }
 
   FastLED.show();

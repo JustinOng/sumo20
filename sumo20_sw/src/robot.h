@@ -21,6 +21,9 @@
 #define PIN_VACUUM 4
 #define PIN_LIFTER 5
 
+// power (0 - 100)
+#define VACUUM_ON 100
+
 // throttle updates to the motor driver/vacuum to UPDATE_THROTTLE ms
 #define UPDATE_THROTTLE 50
 
@@ -80,6 +83,8 @@ class Robot {
     Robot(void);
     void begin(void);
     void setSpeed(int8_t forward, int8_t turn);
+
+    void startVacuumOnMove(bool start);
     void setVacuum(uint8_t power);
     void setVacuumRaw(uint16_t power);
     void setLifter(uint16_t pulsewidth);
@@ -120,6 +125,8 @@ class Robot {
     int8_t _power_right = 0;
 
     Auton_State_t _auton_state, _pAuton_state = NONE;
+
+    bool _vacuum_on_move = false;
 
     void updateDisplay(void);
     void updateAutonState(void);

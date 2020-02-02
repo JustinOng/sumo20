@@ -160,18 +160,18 @@ void Robot::loop(void) {
       (ir[IR_FRONT_LEFT] && _power_left < 0) ||  // if forward yet front sensor triggered
       (ir[IR_REAR_LEFT] && _power_left > 0)      // if reverse yet rear sensor triggered
     ) {
-      _drive->setSpeed(Drive::LEFT, 0);
+      _drive->setVel(Drive::LEFT, 0);
     } else {
-      _drive->setSpeed(Drive::LEFT, _power_left);
+      _drive->setVel(Drive::LEFT, _power_left);
     }
 
     if (
       (ir[IR_FRONT_RIGHT] && _power_right > 0) || // if forward yet front sensor triggered
       (ir[IR_REAR_RIGHT] && _power_right < 0)     // if reverse yet rear sensor triggered
     ) {
-      _drive->setSpeed(Drive::RIGHT, 0);
+      _drive->setVel(Drive::RIGHT, 0);
     } else {
-      _drive->setSpeed(Drive::RIGHT, _power_right);
+      _drive->setVel(Drive::RIGHT, _power_right);
     }
 
     leds_int[0] = CRGB::Green;
@@ -259,8 +259,8 @@ void Robot::updateAutonState(void) {
       Serial1.println(vel_right);
       */
 
-      _drive->setSpeed(Drive::LEFT, -vel_left);
-      _drive->setSpeed(Drive::RIGHT, vel_right);
+      _drive->setVel(Drive::LEFT, -vel_left);
+      _drive->setVel(Drive::RIGHT, vel_right);
       break;
     case SEEK_SPIN:
       if (_auton_state != _pAuton_state) {
@@ -268,11 +268,11 @@ void Robot::updateAutonState(void) {
 
         if (dist_last_seen[0] < dist_last_seen[3]) {
           // target was last seen on the right so spin right
-          _drive->setSpeed(Drive::LEFT, -SEEK_SPIN_SPEED);
-          _drive->setSpeed(Drive::RIGHT, -SEEK_SPIN_SPEED);
+          _drive->setVel(Drive::LEFT, -SEEK_SPIN_SPEED);
+          _drive->setVel(Drive::RIGHT, -SEEK_SPIN_SPEED);
         } else {
-          _drive->setSpeed(Drive::LEFT, SEEK_SPIN_SPEED);
-          _drive->setSpeed(Drive::RIGHT, SEEK_SPIN_SPEED);
+          _drive->setVel(Drive::LEFT, SEEK_SPIN_SPEED);
+          _drive->setVel(Drive::RIGHT, SEEK_SPIN_SPEED);
         }
       }
 
@@ -291,8 +291,8 @@ void Robot::updateAutonState(void) {
       break;
     case SEEK_FORWARD:
       if (_auton_state != _pAuton_state) {
-        _drive->setSpeed(Drive::LEFT, SEEK_FORWARD_SPEED);
-        _drive->setSpeed(Drive::RIGHT, SEEK_FORWARD_SPEED);
+        _drive->setVel(Drive::LEFT, SEEK_FORWARD_SPEED);
+        _drive->setVel(Drive::RIGHT, SEEK_FORWARD_SPEED);
       }
 
       if (

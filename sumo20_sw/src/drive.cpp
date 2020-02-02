@@ -5,7 +5,7 @@ Drive::Drive(Stream* serial) {
   _serial = serial;
 }
 
-void Drive::setSpeed(Motor_t motor, int8_t velocity) {
+void Drive::setVel(Motor_t motor, int8_t velocity) {
   // velocity: -100 to 100 for full reverse to full forward respectively
   _serial->print("v ");
   _serial->print((uint8_t) motor);

@@ -10,6 +10,7 @@ Robot::Robot(void) {
   _lifter->attach(PIN_LIFTER);
 
   setVacuum(0);
+  setLifter(1000);
 
   _display = new Adafruit_SSD1306(128, 64, &Wire, -1);
 }
@@ -59,7 +60,9 @@ void Robot::setVacuumRaw(uint16_t power) {
 }
 
 void Robot::setLifter(uint16_t pulsewidth) {
-  _lifter->writeMicroseconds(pulsewidth);
+  if (pulsewidth < 1000 || pulsewidth > 2000) return;
+
+  _lifter->writeMicroseconds(map(pulsewidth, 1000, 2000, 2000, 1000));
 }
 
 void Robot::updateDisplay(void) {

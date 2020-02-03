@@ -368,7 +368,7 @@ void Robot::updateAutonState(void) {
       if (_auton_state != _pAuton_state) {
         Serial1.println("Entered START_ST2_FW");
         
-        _drive->incPosition(_drive->RIGHT, 105 * 4000);
+        _drive->incPosition(_drive->RIGHT, 80 * 4000);
       }
 
       if (_drive->moveDone(_drive->LEFT) && _drive->moveDone(_drive->RIGHT)) {

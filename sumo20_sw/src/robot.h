@@ -41,9 +41,9 @@
 
 // base speed, TRACK_TURN_SPEED is used to adjust
 // so sensors 1 and 3 see the robot
-#define TRACK_BASE_SPEED 10
+#define TRACK_BASE_SPEED 50
 // how fast to turn, 0 - 100
-#define TRACK_TURN_SPEED 10
+#define TRACK_TURN_SPEED 20
 
 #define TRACK_ERROR_MAX 100
 #define TRACK_ERROR_KP 0.2

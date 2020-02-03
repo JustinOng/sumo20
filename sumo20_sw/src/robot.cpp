@@ -162,8 +162,8 @@ void Robot::loop(void) {
   }
 
   for (byte i = 0; i < NUM_IR; i++) {
-    ir_raw[i] = analogRead(ir_pins[i]);
-    ir[i] = ir_raw[i] < IR_THRESHOLD;
+    ir_raw[i] = IR_WEIGHT * analogRead(ir_pins[i]) + (1 - IR_WEIGHT) * ir_raw[i];
+    ir[i] = ir_raw[i] IR_THRESHOLD;
   }
 
   if (_mode == MODE_RC) {

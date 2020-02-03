@@ -27,8 +27,11 @@
 // throttle updates to the motor driver/vacuum to UPDATE_THROTTLE ms
 #define UPDATE_THROTTLE 50
 
-// ADC value below which to treat as line seen (white)
-#define IR_THRESHOLD 300
+// weighting parameter for exponential filter
+// https://www.megunolink.com/articles/coding/3-methods-filter-noisy-arduino-measurements/
+#define IR_WEIGHT 0.8
+// condition for line seen
+#define IR_THRESHOLD > 950
 #define NUM_IR 4
 
 // ignore detections above this value

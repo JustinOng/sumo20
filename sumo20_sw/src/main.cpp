@@ -32,6 +32,7 @@ void setup() {
 
 void loop() {
   static bool vacuum_turned_on = false;
+  static bool auton = false;
 
   sw1.update();
   IBus.loop();
@@ -41,37 +42,49 @@ void loop() {
   if (sw1.risingEdge() && millis() > 1000) {
     robot.startVacuumOnMove(true);
     vacuum_turned_on = false;
+
+    if (!IBus.is_alive()) {
+      auton = !auton;
+    }
+
+    if (!auton) {
+      robot.setVacuum(0);
+    }
   }
 
-  if (IBus.is_alive()) {
-    int8_t forward = (int8_t) map(IBus.readChannel(1), 1000, 2000, -100, 100);
-    int8_t turn = (int8_t) map(IBus.readChannel(0), 1000, 2000, -100, 100);
+  if (auton) {
+    robot.setMode(Robot::MODE_AUTON);
+  } else {
+    if (IBus.is_alive()) {
+      int8_t forward = (int8_t) map(IBus.readChannel(1), 1000, 2000, -100, 100);
+      int8_t turn = (int8_t) map(IBus.readChannel(0), 1000, 2000, -100, 100);
 
-    robot.setSpeed(forward, turn);
-    if (IBus.readChannel(6) > 1500) {
-      vacuum_turned_on = true;
-      if (IBus.readChannel(7) > 1500) {
-        robot.setVacuumRaw(IBus.readChannel(4));
+      robot.setSpeed(forward, turn);
+      if (IBus.readChannel(6) > 1500) {
+        vacuum_turned_on = true;
+        if (IBus.readChannel(7) > 1500) {
+          robot.setVacuumRaw(IBus.readChannel(4));
+        } else {
+          robot.setVacuum(VACUUM_ON);
+        }
       } else {
-        robot.setVacuum(VACUUM_ON);
+        if (vacuum_turned_on) {
+          robot.setVacuum(0);
+          robot.startVacuumOnMove(false);
+        }
       }
-    } else {
-      if (vacuum_turned_on) {
-        robot.setVacuum(0);
-        robot.startVacuumOnMove(false);
-      }
-    }
 
-    robot.setLifter(IBus.readChannel(2));
-    
-    if (IBus.readChannel(9) > 1500) {
-      robot.setMode(Robot::MODE_AUTON);
+      robot.setLifter(IBus.readChannel(2));
+      
+      if (IBus.readChannel(9) > 1500) {
+        robot.setMode(Robot::MODE_AUTON);
+      } else {
+        robot.setMode(Robot::MODE_RC);
+      }
     } else {
+      robot.setSpeed(0, 0);
       robot.setMode(Robot::MODE_RC);
     }
-  } else {
-    robot.setSpeed(0, 0);
-    robot.setMode(Robot::MODE_RC);
   }
 
 #ifdef LOG_CONTROLLER_VALUES

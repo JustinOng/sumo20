@@ -317,7 +317,7 @@ void Robot::updateAutonState(void) {
       break;
     case SEEK_FORWARD:
       if (_auton_state != _pAuton_state) {
-        _drive->setVel(Drive::LEFT, SEEK_FORWARD_SPEED);
+        _drive->setVel(Drive::LEFT, -SEEK_FORWARD_SPEED);
         _drive->setVel(Drive::RIGHT, SEEK_FORWARD_SPEED);
       }
 

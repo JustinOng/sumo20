@@ -339,7 +339,9 @@ void Robot::updateAutonState(void) {
         _drive->incPosition(_drive->RIGHT, FLEE_LINE_REV_POS);
       }
       
-      if (_drive->moveDone(_drive->LEFT) && _drive->moveDone(_drive->RIGHT)) {
+      // use OR because this does not need to be precise
+      // and can assume both axis would have finished at same time
+      if (_drive->moveDone(_drive->LEFT) || _drive->moveDone(_drive->RIGHT)) {
         new_state = FLEE_LINE_TURN;
       }
       break;
@@ -368,7 +370,9 @@ void Robot::updateAutonState(void) {
         _drive->incPosition(_drive->RIGHT, vel_right);
       }
 
-      if (_drive->moveDone(_drive->LEFT) && _drive->moveDone(_drive->RIGHT)) {
+      // use OR because this does not need to be precise
+      // and can assume both axis would have finished at same time
+      if (_drive->moveDone(_drive->LEFT) || _drive->moveDone(_drive->RIGHT)) {
         new_state = SEEK_FORWARD;
       }
       break;

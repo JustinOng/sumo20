@@ -32,6 +32,11 @@ void Drive::incPosition(Motor_t motor, int32_t change) {
   _serial->print((uint8_t) motor);
   _serial->print(" ");
   _serial->println(change);
+
+  // assume that control mode of the axis would have changed to 4
+  // pre-emptively set it to 4 so autonomous does not see
+  // the old value as move complete
+  _ctrl_mode[motor] = 4;
 }
 
 void Drive::requestCtrlMode(void) {

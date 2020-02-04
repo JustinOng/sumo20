@@ -222,7 +222,7 @@ void Robot::updateAutonState(void) {
   Auton_State_t new_state = INVALID;
 
   uint16_t *distance = _distance_sensors->distance;
-  int16_t vel_left = 0, vel_right = 0, error = 0;
+  int32_t vel_left = 0, vel_right = 0, error = 0;
 
   switch(_auton_state) {
     case NONE:

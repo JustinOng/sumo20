@@ -55,11 +55,11 @@
 #define SEEK_SPIN_DURATION 1000
 
 // how fast to move forward, 0 - 100
-#define SEEK_FORWARD_SPEED 20
+#define SEEK_FORWARD_SPEED 40
 
 // min and max of how much to turn when a line is seen
-#define FLEE_LINE_TURN_MIN 10000
-#define FLEE_LINE_TURN_MAX 40000
+#define FLEE_LINE_TURN_MIN 150000
+#define FLEE_LINE_TURN_MAX 250000
 
 const uint8_t ir_pins[NUM_IR] = {23, 15, 14, 20};
 
@@ -101,7 +101,8 @@ class Robot {
       TRACK,
       SEEK_SPIN,
       SEEK_FORWARD,
-      FLEE_LINE,
+      FLEE_LINE_REV,
+      FLEE_LINE_TURN,
       START_ST1_R_REV, // turn away from starting position
       START_ST2_FW,   // move forward
       DONE,

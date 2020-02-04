@@ -43,12 +43,13 @@ void loop() {
     robot.startVacuumOnMove(true);
     vacuum_turned_on = false;
 
+    // if IBus is not connected, toggle autonomous routine
     if (!IBus.is_alive()) {
       auton = !auton;
-    }
-
-    if (!auton) {
-      robot.setVacuum(0);
+      if (!auton) {
+        robot.startVacuumOnMove(false);
+        robot.setVacuum(0);
+      }
     }
   }
 

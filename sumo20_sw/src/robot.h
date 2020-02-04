@@ -122,6 +122,7 @@ class Robot {
     // true if line is seen
     bool ir[NUM_IR] = {0};
     uint16_t ir_raw[NUM_IR] = {0};
+    elapsedMillis ir_last_seen[NUM_IR];
     CRGB leds_int[NUM_LED_INT];
 
     Adafruit_SSD1306 *_display;

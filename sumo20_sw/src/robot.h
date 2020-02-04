@@ -61,8 +61,8 @@
 #define FLEE_LINE_REV_POS -50000
 
 // min and max of how much to turn when a line is seen
-#define FLEE_LINE_TURN_MIN 150000
-#define FLEE_LINE_TURN_MAX 250000
+#define FLEE_LINE_TURN_MIN 100000
+#define FLEE_LINE_TURN_MAX 200000
 
 const uint8_t ir_pins[NUM_IR] = {23, 15, 14, 20};
 

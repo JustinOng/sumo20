@@ -346,16 +346,24 @@ void Robot::updateAutonState(void) {
     case FLEE_LINE_TURN:
       if (_auton_state != _pAuton_state) {
         Serial1.println("Entered FLEE_LINE");
-        
+
         vel_right = random(FLEE_LINE_TURN_MIN, FLEE_LINE_TURN_MAX);
         vel_left = -vel_right;
 
-        // pick a random direction
-        if (random(0, 2)) {
-          vel_left *= -1;
-          vel_right *= -1;
+        if (ir_last_seen[0] < 1000 || ir_last_seen[1] < 1000) {
+          //if the front sensors activated recently, use them to determine
+          // which way to spin ie if left last saw the line, spin right, else spin left
+          if (ir_last_seen[0] < ir_last_seen[1]) {
+            vel_left *= -1;
+            vel_right *= -1;
+          }
+        } else {
+          // pick a random direction
+          if (random(0, 2)) {
+            vel_left *= -1;
+            vel_right *= -1;
+          }
         }
-
         _drive->incPosition(_drive->LEFT, vel_left);
         _drive->incPosition(_drive->RIGHT, vel_right);
       }

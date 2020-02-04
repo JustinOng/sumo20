@@ -57,6 +57,9 @@
 // how fast to move forward, 0 - 100
 #define SEEK_FORWARD_SPEED 40
 
+// how much to reverse when a line is seen
+#define FLEE_LINE_REV_POS -50000
+
 // min and max of how much to turn when a line is seen
 #define FLEE_LINE_TURN_MIN 150000
 #define FLEE_LINE_TURN_MAX 250000

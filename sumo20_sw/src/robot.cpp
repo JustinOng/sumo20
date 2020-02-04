@@ -333,8 +333,8 @@ void Robot::updateAutonState(void) {
       break;
     case FLEE_LINE_REV:
       if (_auton_state != _pAuton_state) {
-        _drive->incPosition(_drive->LEFT, -100000);
-        _drive->incPosition(_drive->RIGHT, -100000);
+        _drive->incPosition(_drive->LEFT, FLEE_LINE_REV_POS);
+        _drive->incPosition(_drive->RIGHT, FLEE_LINE_REV_POS);
       }
       
       if (_drive->moveDone(_drive->LEFT) && _drive->moveDone(_drive->RIGHT)) {

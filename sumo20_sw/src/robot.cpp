@@ -173,7 +173,7 @@ void Robot::loop(void) {
     if (ir[i]) ir_last_seen[i] = 0;
   }
 
-  if (_mode == MODE_RC) {
+  if (_mode == MODE_RC || _auton_state == DONE) {
     /*if (
       (ir[IR_FRONT_LEFT] && _power_left < 0) ||  // if forward yet front sensor triggered
       (ir[IR_REAR_LEFT] && _power_left > 0)      // if reverse yet rear sensor triggered
@@ -404,7 +404,7 @@ void Robot::updateAutonState(void) {
       }
 
       if (_drive->moveDone(_drive->LEFT) && _drive->moveDone(_drive->RIGHT)) {
-        new_state = TRACK;
+        new_state = DONE;
       }
       break;
     case DONE:

@@ -165,6 +165,11 @@ void Robot::loop(void) {
     ir_raw[i] = IR_WEIGHT * analogRead(ir_pins[i]) + (1 - IR_WEIGHT) * ir_raw[i];
     ir[i] = ir_raw[i] IR_THRESHOLD;
 
+    // explicitly ignore the rear sensors because they have been removed
+    if (i == 2 || i == 3) {
+      ir[i] = 0;
+    }
+
     if (ir[i]) ir_last_seen[i] = 0;
   }
 

@@ -169,7 +169,7 @@ void Robot::loop(void) {
   }
 
   if (_mode == MODE_RC) {
-    if (
+    /*if (
       (ir[IR_FRONT_LEFT] && _power_left < 0) ||  // if forward yet front sensor triggered
       (ir[IR_REAR_LEFT] && _power_left > 0)      // if reverse yet rear sensor triggered
     ) {
@@ -185,7 +185,10 @@ void Robot::loop(void) {
       _drive->setVel(Drive::RIGHT, 0);
     } else {
       _drive->setVel(Drive::RIGHT, _power_right);
-    }
+    }*/
+
+    _drive->setVel(Drive::LEFT, _power_left);
+    _drive->setVel(Drive::RIGHT, _power_right);
 
     if (_vacuum_on_move && (millis() % 500 < 250)) {
       leds_int[0] = CRGB::Black;

@@ -62,7 +62,7 @@ void Robot::setVacuumRaw(uint16_t power) {
 void Robot::setLifter(uint16_t pulsewidth) {
   if (pulsewidth < 1000 || pulsewidth > 2000) return;
 
-  pulsewidth = max(pulsewidth, 1150);
+  pulsewidth = max(pulsewidth, 1250);
 
   _lifter->writeMicroseconds(map(pulsewidth, 1000, 2000, 2000, 1000));
 }

@@ -416,6 +416,7 @@ void Robot::updateAutonState(void) {
 
   if (ir[0] || ir[1] || ir[2] || ir[3]) {
     if (
+      _auton_state != NONE &&
       _auton_state != START_ST1_R_REV &&
       _auton_state != START_ST2_FW &&
       _auton_state != FLEE_LINE_REV &&
